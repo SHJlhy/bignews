@@ -66,6 +66,37 @@
         $(this).addClass('active').siblings().removeClass('active');
       })
 
+      // 调用接口调用个人信息
+      $.ajax({
+        url: 'http://localhost:8080/api/v1/admin/user/info',
+        headers: {
+          Authorization: window.localStorage.getItem('token')
+        },
+        success: function(backData) {
+          console.log(backData);
+
+          // 登录成功之后才会有token 
+          //   console.log(backData);
+          //   把获取的数据在页面中渲染
+          $('.user_info>img').attr('src', backData.data.userPic);
+          $('.user_info>span').text(backData.data.nickname);
+          $('.user_center_link>img').attr('src', backData.data.userPic);
+          // 如果用户没有登录是不可以获取信息的
+          //   怎么判断用户没有登录
+
+        },
+        error: function(backData) {
+          if (backData.statusText == 'Forbidden') {
+            alert('请先登录');
+            window.location.href = './login.html';
+          }
+
+
+        }
+
+
+      })
+
 
     })
   </script>

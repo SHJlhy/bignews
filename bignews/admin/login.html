@@ -50,7 +50,7 @@
         // 获取用户和密码的内容 trim 去掉两侧的空白
         var username = $('.input_txt').val().trim();
         var password = $('.input_pass').val().trim();
-        // 非空判断
+        // 非空判断  只要有一个为空就提示
         if (username == '' || password == '') {
           alert('请输入');
           return;
@@ -68,8 +68,11 @@
               alert(backData.msg);
 
             } else if (backData.code === 200) {
-              alert(backData.msg);
-              // 去首页 index
+              // alert(backData.msg);
+              // 保存token 方便后续使用  登录成功之后返回的结果中有显示  保存到本地
+              window.localStorage.setItem('token', backData.token);
+
+              // 登录成功之后去首页 index
               window.location.href = './index.html';
 
             }
