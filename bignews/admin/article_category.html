@@ -90,7 +90,7 @@
       <td>{{$value.slug}}</td>
       <td class="text-center">
         <a href="#;" data-toggle="modal" class=" btn btn-info btn-xs">编辑</a>
-        <a href="#;" class="btn btn-danger btn-xs">删除</a>
+        <a href="#;" class="btn btn-danger btn-xs btn-del" data-id="{{$value.id}}">删除</a>
       </td>
     </tr>
     {{/each}}
@@ -119,33 +119,57 @@
       // 1 先找弹框
       $('.btn-primary').click(function() {
 
-        //   $('#myModal').modal('hide');
-        var name = $('.cate-name').val();
-        var slug = $('.cate-slug').val();
-        //   调用接口
+          //   $('#myModal').modal('hide');
+          var name = $('.cate-name').val();
+          var slug = $('.cate-slug').val();
+          //   调用接口
+          $.ajax({
+            url: BigNew.category_add,
+            type: 'post',
+            data: {
+              name: name,
+              slug: slug,
+            },
+            success: function(backData) {
+              console.log(backData);
+
+              // 输入成功之后弹框隐藏
+              if (backData.code == 201) {
+                $('#myModal').modal('hide');
+                //   更新数据，不用刷新页面，自动更新，调用获取的代码 封装
+                getData();
+              }
+            }
+
+          })
+        })
+        // 删除功能
+        // 1 获取 删除按钮  把id添加到标签中，点击时获取
+        // 2 调用接口
+        // 3 删除成功把数据删除 并更新数据
+        // 数据是刷新页面时重新获取的，给动态的数据添加点击事件使用事件委托
+      $('tbody').on('click', '.btn-del', function() {
+        //   获取id
+        var id = $(this).attr('data-id');
+        // 调用接口
         $.ajax({
-          url: BigNew.category_add,
+          url: BigNew.category_delete,
           type: 'post',
           data: {
-            name: name,
-            slug: slug,
+            id: id,
           },
           success: function(backData) {
             console.log(backData);
-
-            // 输入成功之后弹框隐藏
-            if (backData.code == 201) {
-              $('#myModal').modal('hide');
-              //   更新数据，不用刷新页面，自动更新，调用获取的代码 封装
+            if (backData.code == 204) {
+              // 删除成功，更新数据
               getData();
+
             }
           }
 
         })
+
       })
-
-
-
 
     })
   </script>
