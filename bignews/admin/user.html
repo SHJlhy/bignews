@@ -90,37 +90,43 @@
       //   修改用户信息 调用信息
       //   获取修改按钮
       $('.btn-edit').click(function(e) {
-        //   阻止默认行为  提交按钮
-        e.preventDefault();
-        // 调用接口
-        var data = new FormData(document.querySelector('form'));
-        // 使用FormData 必须保证name 属性
-        $.ajax({
-          url: BigNew.user_edit,
-          // 使用formDada修改
-          // 创建对象
-          type: 'POST',
-          data: data,
-          contentType: false,
-          processData: false,
+          //   阻止默认行为  提交按钮
+          e.preventDefault();
+          // 调用接口
+          var data = new FormData(document.querySelector('form'));
+          // 使用FormData 必须保证name 属性
+          $.ajax({
+            url: BigNew.user_edit,
+            // 使用formDada修改
+            // 创建对象
+            type: 'POST',
+            data: data,
+            contentType: false,
+            processData: false,
 
-          success: function(backData) {
-            console.log(backData);
-            if (backData.code == 200) {
-              // 如果更新成功 刷新父元素的页面
-              //   使用liver server 打开 不会出问题
-              //   点击修改后 不仅要改变iframe的页面，还要刷新其父元素的页面
-              window.parent.location.reload();
-              //   刷新自己的页面
-              //   window.location.reload();
+            success: function(backData) {
+              console.log(backData);
+              if (backData.code == 200) {
+                // 如果更新成功 刷新父元素的页面
+                //   使用liver server 打开 不会出问题
+                //   点击修改后 不仅要改变iframe的页面，还要刷新其父元素的页面
+                window.parent.location.reload();
+                //   刷新自己的页面
+                //   window.location.reload();
 
+              }
             }
 
-
-
-          }
+          })
 
         })
+        // 修改图片信息
+        // 1 获取输入框  改变事件  2 获取临时地址 3 把地址给src
+
+      $('#exampleInputFile').change(function() {
+        var url = URL.createObjectURL(this.files[0]);
+
+        $('.user_pic').attr('src', url);
 
 
       })
