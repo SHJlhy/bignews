@@ -71,6 +71,31 @@
       </form>
     </div>
   </div>
+  <!-- 获取文章类别 -->
+  <script type='text/html' id='arttem'>
+    <!-- 下面的根据返回的结果生成  同时把id放进去 -->
+    {{each data}}
+    <option value="{{$value.id}}">{{$value.name}}</option>
+    {{/each}}
+  </script>
+  <script>
+    $(function() {
+      $.ajax({
+        url: BigNew.category_list,
+
+        success: function(backData) {
+          console.log(backData);
+          var html = template('arttem', backData)
+          $('.category').html(html);
+        }
+      })
+
+
+    })
+  </script>
+
+
+
 </body>
 
 </html>
