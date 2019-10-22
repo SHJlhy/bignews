@@ -54,7 +54,7 @@
             <th class="text-center" width="100">操作</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class='myTbody'>
           <tr>
             <td>王积千造统最头</td>
             <td>杰克</td>
@@ -81,19 +81,50 @@
   <option value="{{$value.id}}">{{$value.name}}</option>
   {{/each}}
 </script>
+
+<!-- 定义的模板需要循环的是谁  backData.data.data-->
+<!-- 所以最后循环的是data.data -->
+<!-- 定义列表数据的模板 -->
+<script type='text/html' id='articleTem'>
+  {{each data.data}}
+  <tr>
+    <td>{{$value.title}}</td>
+    <td>{{$value.author}}</td>
+    <td>{{$value.category}}</td>
+    <td class="text-center">{{$value.data}}</td>
+    <td class="text-center">{{$value.state}}</td>
+    <td class="text-center" value="{{$value.id}}">
+      <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
+      <a href="javascript:void(0);" class="btn btn-danger btn-xs delete">删除</a>
+    </td>
+  </tr>
+  {{/each}}
+</script>
 <script>
   $(function() {
-    //   获取所有分类
+    //  一 获取所有分类
     // 1 刷新页面 调用接口 获取数据 渲染到页面  接口和文章渲染的接口相同  只是在页面上渲染的方式不同---模板引擎
     // 1 导入 2定义模板 3关键部分挖坑 4 调用方法 5 把返回的结果渲染到页面
     // 得到的结果data 是数组
     // 调用方法渲染到页面之后 默认的所有分类没有 在定义模板的循环体的前面添加上，循环的时候不会添加进去
     $.ajax({
       url: BigNew.category_list,
+
       success: function(backData) {
         console.log(backData);
         var html = template('arttem', backData)
         $('#selCategory').html(html);
+      }
+    })
+
+    // 二 获取文章列表数据  不做任何的筛选.....................
+    // 模板引擎
+    $.ajax({
+      url: BigNew.article_query,
+      success: function(backData) {
+        console.log(backData);
+        var html = template('articleTem', backData)
+        $('.myTbody').html(html);
       }
     })
   })
