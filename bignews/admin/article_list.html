@@ -111,6 +111,7 @@
 </script>
 <script>
   $(function() {
+    var myperpage = 10;
     //  一 获取所有分类
     // 1 刷新页面 调用接口 获取数据 渲染到页面  接口和文章渲染的接口相同  只是在页面上渲染的方式不同---模板引擎
     // 1 导入 2定义模板 3关键部分挖坑 4 调用方法 5 把返回的结果渲染到页面
@@ -151,12 +152,25 @@
             // console.log(event);
             // console.log(page);
             // page就是 当前的页
-            // 点击页数 获取当前页的数据 调用接口 在页面中渲染
+            // 1 点击页数 获取当前页的数据 调用接口 在页面中渲染
+            // 2 筛选的数据不正确 --获取的参数不对,没有获取文章类型和发布状态,所以筛选的数据不对
+            // 3 修改完参数之后,页面的显示个数不一样==在渲染的时候设置了参数10,
+            // 而在筛选的时候没有设置每页的参数,默认为6,所以每页显示的个数不同
+            // 修改筛选功能的参数
+            // 4 但是每页的显示个数也不能写死,可能公司要求每页显示8条数据呢,
+            // 之后又想显示10条呢,所以设置一个全局变量,要修改的收修改变量的值即可
+            // 用变量把写死的数据替换掉
+            // 5 筛选之后,总页数会改变,调用分页器插件的方法 修改总页数
+            var id = $('#selCategory').val();
+            var state = $('#selStatus').val();
+
             $.ajax({
               url: BigNew.article_query,
               data: {
+                type: id,
+                state: state,
                 page: page,
-                perpage: 10,
+                perpage: myperpage,
               },
               success: function(backData) {
                 console.log(backData);
@@ -165,11 +179,6 @@
                 $('.myTbody').html(html);
               }
             })
-
-
-
-
-
           }
         });
       }
@@ -184,9 +193,11 @@
       var state = $('#selStatus').val();
       $.ajax({
         url: BigNew.article_query,
+        // 点击筛选按钮获取的数据页数不对
         data: {
           type: id,
           state: state,
+          perpage: myperpage,
         },
 
         success: function(backData) {
@@ -195,6 +206,11 @@
           // 还是和开始渲染页面一样,使用模板引擎
           var html = template('articleTem', backData)
           $('.myTbody').html(html);
+          // 重新设置总页数
+          // changeTotalPages 固定的写法 调用插件内部的一个方法
+          // 参数1 新的总页数 backData.data.totalPage
+          // 参数2 当前页  1
+          $('#pagination-demo').twbsPagination('changeTotalPages', backData.data.totalPage, 1);
         }
       })
     })
@@ -202,25 +218,6 @@
     // 分页使用插件 导入插件 放在下下面 总的页数是写死的
     // 所以不可以放在最下面,应该在渲染页面的时候把代码放进去
   })
-</script>
-<script>
-  // $('#pagination-demo').twbsPagination({
-  //   // 总页数
-  //   totalPages: 66,
-  //   visiblePages: 6,
-  //   // first的内容
-  //   first: "首页",
-  //   prev: "上一页",
-  //   next: "下一页",
-  //   last: "尾页",
-  //   // 点击页码之后出发的事件
-  //   onPageClick: function(event, page) {
-  //     // console.log('出发了');
-  //     // console.log(event);
-  //     console.log(page);
-  //     // page就是 当前的页码
-  //   }
-  // });
 </script>
 
 </html>
