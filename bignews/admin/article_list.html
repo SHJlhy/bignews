@@ -13,6 +13,9 @@
   <script src="./libs/jquery-1.12.4.min.js"></script>
   <!-- 引入模板引擎js文件 -->
   <script src="./libs/template-web.js"></script>
+  <!-- 导入分页插件 依赖于bootstrap 文件已导入 只导入 插件自身的js文件 -->
+  <script src="./libs/jquery.twbsPagination.js"></script>
+
 </head>
 
 <body>
@@ -68,11 +71,17 @@
           </tr>
         </tbody>
       </table>
+      <!-- 中间区域的 底部容器 -->
       <div class="row text-center">
+        <ul id="pagination-demo" class="pagination-sm"></ul>
       </div>
     </div>
   </div>
 </body>
+
+
+
+
 <script type='text/html' id='arttem'>
   <!-- 所有分类就一个 固定的 放在循环体的前面 ，不参与循环 -->
   <option value=''>所有分类</option>
@@ -111,7 +120,7 @@
       url: BigNew.category_list,
 
       success: function(backData) {
-        console.log(backData);
+        // console.log(backData);
         var html = template('arttem', backData)
         $('#selCategory').html(html);
       }
@@ -122,9 +131,47 @@
     $.ajax({
       url: BigNew.article_query,
       success: function(backData) {
-        console.log(backData);
+        // console.log(backData);
         var html = template('articleTem', backData)
         $('.myTbody').html(html);
+        // 插入分页器  让页码和数据对应.......................................
+        $('#pagination-demo').twbsPagination({
+          // 总页数
+          totalPages: backData.data.totalCount,
+          // 在页面上显示的页数个数
+          visiblePages: 6,
+          // first的内容
+          first: "首页",
+          prev: "上一页",
+          next: "下一页",
+          last: "尾页",
+          // 点击页码之后出发的事件
+          onPageClick: function(event, page) {
+            // console.log('出发了');
+            // console.log(event);
+            // console.log(page);
+            // page就是 当前的页
+            // 点击页数 获取当前页的数据 调用接口 在页面中渲染
+            $.ajax({
+              url: BigNew.article_query,
+              data: {
+                page: page,
+                perpage: 10,
+              },
+              success: function(backData) {
+                console.log(backData);
+                // 把结果渲染到页面中
+                var html = template('articleTem', backData)
+                $('.myTbody').html(html);
+              }
+            })
+
+
+
+
+
+          }
+        });
       }
     })
 
@@ -143,7 +190,7 @@
         },
 
         success: function(backData) {
-          console.log(backData);
+          // console.log(backData);
           // 把筛选后的结果渲染到页面中
           // 还是和开始渲染页面一样,使用模板引擎
           var html = template('articleTem', backData)
@@ -151,7 +198,29 @@
         }
       })
     })
+
+    // 分页使用插件 导入插件 放在下下面 总的页数是写死的
+    // 所以不可以放在最下面,应该在渲染页面的时候把代码放进去
   })
+</script>
+<script>
+  // $('#pagination-demo').twbsPagination({
+  //   // 总页数
+  //   totalPages: 66,
+  //   visiblePages: 6,
+  //   // first的内容
+  //   first: "首页",
+  //   prev: "上一页",
+  //   next: "下一页",
+  //   last: "尾页",
+  //   // 点击页码之后出发的事件
+  //   onPageClick: function(event, page) {
+  //     // console.log('出发了');
+  //     // console.log(event);
+  //     console.log(page);
+  //     // page就是 当前的页码
+  //   }
+  // });
 </script>
 
 </html>
