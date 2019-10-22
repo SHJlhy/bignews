@@ -126,8 +126,7 @@
       var editor = new E('.editor')
       editor.create()
 
-      // 发布文章 1点击发布按钮 获取内容(表单) 调用接口 发布成功提示
-      $('.btn-release').click(function() {
+      function publishArticle(stata) {
         // 使用表单对象 发布文章
         var data = new FormData($('form')[0]);
         // 必须是表单元素,并且有name的属性
@@ -135,7 +134,7 @@
         // 获取富文本编辑器内部的内容 带结构的那种
         // content属性没有添加 没有input
         data.append('content', editor.txt.html());
-        data.append('state', '已发布');
+        data.append('state', stata);
 
         // 调用接口 
         $.ajax({
@@ -153,7 +152,20 @@
             }
           }
         })
+
+      }
+      // 发布文章 1点击发布按钮 获取内容(表单) 调用接口 发布成功提示
+      $('.btn-release').click(function() {
+          publishArticle('已发布');
+        })
+        // 发布文章为草稿 也是和发布文章一样 只是点击的按钮和状态不一样 封装函数 
+        // 把代码从时间中抽离出来
+
+      $('.btn-draft').click(function() {
+
+        publishArticle('草稿');
       })
+
     })
   </script>
 </body>
