@@ -90,12 +90,23 @@
         }
       })
 
+      // 图片预览
+      $('#inputCover').change(function() {
+        // 获取文本框的图像文件
+        var file = this.files[0];
+        // 获取图像文件的临时地址
+        var url = URL.createObjectURL(file);
+        // 把获取的地址设置给图片的src属性
+
+        $('.article_cover').attr('src', url);
+        // $(this).prev('img').attr('src', url);
+
+      })
+
+
 
     })
   </script>
-
-
-
 </body>
 
 </html>
