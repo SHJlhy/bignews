@@ -36,7 +36,7 @@
                             <option value="草稿">草稿</option>
                             <option value="已发布">已发布</option>
                         </select>
-            <button id="btnSearch" class="btn btn-default btn-sm">筛选</button>
+            <button id="btnSearch" class="btn btn-default btn-sm btn-search">筛选</button>
           </form>
         </div>
         <div class="col-xs-6">
@@ -126,6 +126,30 @@
         var html = template('articleTem', backData)
         $('.myTbody').html(html);
       }
+    })
+
+    // 三  筛选
+    // 1 点击筛选按钮 2 选出想要的数据  调用接口==还是获取数据列表的接口
+    $('.btn-search').click(function(e) {
+      // button 标签的默认类型是submit   需要阻止默认行为
+      e.preventDefault();
+      var id = $('#selCategory').val();
+      var state = $('#selStatus').val();
+      $.ajax({
+        url: BigNew.article_query,
+        data: {
+          type: id,
+          state: state,
+        },
+
+        success: function(backData) {
+          console.log(backData);
+          // 把筛选后的结果渲染到页面中
+          // 还是和开始渲染页面一样,使用模板引擎
+          var html = template('articleTem', backData)
+          $('.myTbody').html(html);
+        }
+      })
     })
   })
 </script>
